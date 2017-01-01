@@ -1,5 +1,4 @@
 ---
-# defaults file for c4a-ansible-pcmk-haproxy
 
 node1: oracle1
 node2: oracle2
