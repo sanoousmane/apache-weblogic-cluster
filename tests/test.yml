@@ -1,0 +1,5 @@
+---
+- hosts: weblogic
+  remote_user: root
+  roles:
+    - apache-weblogic-cluster

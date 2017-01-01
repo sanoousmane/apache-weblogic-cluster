@@ -1,0 +1,57 @@
+---
+- name: Install packages for apache cluster 
+  yum:
+    pkg: "{{ item }}"
+    state: installed
+  with_items:
+      - pcs 
+      - pacemaker 
+      - corosync 
+      - resource-agents
+#      - httpd 2.2 because 2.4 not suppoted  for weblogic mod apache proxy
+#httpd is installed  from source on centos 7
+
+- name: start pcsd on nodes
+  service:
+    name: pcsd
+    state: started
+    enabled: yes
+
+- name: set password for hacluster nodes
+  shell: echo {{ password_hacluster_user }} | passwd --stdin hacluster
+
+- name: Authenticate all nodes
+  command: pcs cluster auth {{ node1 }} {{ node2 }}  -u hacluster -p {{ password_hacluster_user }} --force
+  when: inventory_hostname == master_node
+
+- name: create pacemaker cluster
+  command: pcs cluster setup --name {{ cluster_name }} {{ node1 }} {{ node2 }} 
+  when: inventory_hostname == master_node
+  
+- name: pcs cluster enable
+  command: pcs cluster enable --all
+  when: inventory_hostname == master_node
+
+- name: pcs cluster start
+  command: pcs cluster start --all
+  when: inventory_hostname == master_node
+
+- name: set stonith-enabled
+  command: pcs property set stonith-enabled=false
+  when: inventory_hostname == master_node
+
+- name: set no-quorum-policy
+  command: pcs property set no-quorum-policy=ignore
+  when: inventory_hostname == master_node
+
+- name: set no-quorum-policy
+  command: pcs resource create WebServer systemd:httpd op monitor interval=5
+
+- name: set no-quorum-policy
+  command: pcs resource create Cluster_VIP ocf:heartbeat:IPaddr2 ip=10.120.0.59 cidr_netmask=24 op monitor interval=10s
+
+- name: set no-quorum-policy
+  command: pcs constraint order WebServer then Cluster_VIP
+
+- name: set no-quorum-policy
+  command: pcs constraint colocation add WebServer Cluster_VIP INFINITY

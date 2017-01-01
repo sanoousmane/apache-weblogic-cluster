@@ -1,0 +1,8 @@
+---
+# defaults file for c4a-ansible-pcmk-haproxy
+
+node1: oracle1
+node2: oracle2
+password_hacluster_user: MzgyNzFjY2Y0N2I3YzJjYzk5ZWQ0ODU1
+master_node: oracle1
+cluster_name: Weblogic-Cluster
