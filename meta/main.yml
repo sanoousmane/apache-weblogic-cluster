@@ -8,9 +8,6 @@ galaxy_info:
    - name: EL
      versions:
       - 7
-   - name: "Oracle Linux"
-     versions:
-      - 7
   galaxy_tags:
    - system
    - networking
