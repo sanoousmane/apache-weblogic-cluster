@@ -8,12 +8,14 @@ Requirements
 This role requires Ansible 1.9 or higher and platform requirements are listed in the metadata file.
 
 Minimum of two oracle linux 7
+
 httpd 2.2 required
 
 Role Variables
 --------------
 
 node1: oracle1
+
 node2: oracle2
 
 Dependencies
