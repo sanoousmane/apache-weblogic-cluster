@@ -46,12 +46,16 @@
 
 - name: set no-quorum-policy
   command: pcs resource create WebServer systemd:httpd op monitor interval=5
+  when: inventory_hostname == master_node
 
 - name: set no-quorum-policy
   command: pcs resource create Cluster_VIP ocf:heartbeat:IPaddr2 ip=10.120.0.59 cidr_netmask=24 op monitor interval=10s
+  when: inventory_hostname == master_node
 
 - name: set no-quorum-policy
   command: pcs constraint order WebServer then Cluster_VIP
+  when: inventory_hostname == master_node
 
 - name: set no-quorum-policy
   command: pcs constraint colocation add WebServer Cluster_VIP INFINITY
+  when: inventory_hostname == master_node
